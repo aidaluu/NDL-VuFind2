@@ -57,7 +57,9 @@ class FormFactory extends \VuFind\Form\FormFactory
      * creating a service.
      * @throws ContainerException if any other error occurs
      */
-    public function __invoke(ContainerInterface $container, $requestedName,
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
         array $options = null
     ) {
         $config = $container->get(\VuFind\Config\PluginManager::class)
@@ -71,9 +73,11 @@ class FormFactory extends \VuFind\Form\FormFactory
             $form->setInstitutionEmail($config['Site']['email']);
         }
         if ($user = $container->get(\VuFind\Auth\Manager::class)->isLoggedIn()) {
-            $roles= $container->get(\VuFind\Role\PermissionManager::class)
+            $roles = $container->get(\VuFind\Role\PermissionManager::class)
                 ->getActivePermissions();
-            $form->setUser($user, $roles);
+            $patron = $container->get(\VuFind\Auth\ILSAuthenticator::class)
+                ->storedCatalogLogin();
+            $form->setUser($user, $roles, $patron ?: []);
         }
         $form->setViewHelperManager($container->get('ViewHelperManager'));
         $form->setRecordRequestFormsWithBarcode(
