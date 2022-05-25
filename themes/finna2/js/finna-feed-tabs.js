@@ -30,6 +30,13 @@ finna.feedTabs = (function finnaFeedTab() {
       element.parentNode.addEventListener('click', function onFeedTabClick(e) {
         e.preventDefault();
         _.displayTab(element);
+        if (element.parentNode.nextElementSibling != null) {
+          if (element.parentNode.classList.contains('active')) {
+            element.parentNode.nextElementSibling.style.display = 'block';
+          } else {
+            element.parentNode.nextElementSibling.style.display = 'none';
+          }
+        }
       });
     });
 
@@ -67,7 +74,7 @@ finna.feedTabs = (function finnaFeedTab() {
 
     _.anchors.forEach(function removeActive(el) {
       var parent = el.parentNode;
-      if (el.dataset.tab === tab) {
+      if (el.dataset.tab === tab && !parent.classList.contains('active')) {
         parent.classList.add('active');
         parent.setAttribute('aria-selected', true);
         if (el.classList.contains('feed-accordion-anchor')) {
