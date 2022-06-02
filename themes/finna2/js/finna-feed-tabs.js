@@ -29,14 +29,7 @@ finna.feedTabs = (function finnaFeedTab() {
     _.anchors.forEach(function addClickListener(element) {
       element.parentNode.addEventListener('click', function onFeedTabClick(e) {
         e.preventDefault();
-        _.displayTab(element);
-        if (element.parentNode.nextElementSibling != null) {
-          if (element.parentNode.classList.contains('active')) {
-            element.parentNode.nextElementSibling.style.display = 'block';
-          } else {
-            element.parentNode.nextElementSibling.style.display = 'none';
-          }
-        }
+        _.toggleTab(element);
       });
     });
 
@@ -63,7 +56,7 @@ finna.feedTabs = (function finnaFeedTab() {
    * 
    * @param {HTMLElement} element
    */
-  FeedTab.prototype.displayTab = function displayTab(element) {
+  FeedTab.prototype.toggleTab = function toggleTab(element) {
     var _ = this;
 
     _.isLoading = true;
@@ -85,6 +78,13 @@ finna.feedTabs = (function finnaFeedTab() {
         parent.setAttribute('aria-selected', false);
       }
     });
+    if (element.parentNode.nextElementSibling != null) {
+      if (element.parentNode.classList.contains('active')) {
+        element.parentNode.nextElementSibling.style.display = 'block';
+      } else {
+        element.parentNode.nextElementSibling.style.display = 'none';
+      }
+    }
     _.tabContent.innerHTML = '';
     delete _.tabContent.dataset.init;
     _.tabContent.dataset.feed = tab;
