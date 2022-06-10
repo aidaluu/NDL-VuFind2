@@ -65,6 +65,9 @@ finna.feedTabs = (function finnaFeedTab() {
       window.location.hash = tab;
     }
 
+    _.tabContent.innerHTML = '';
+    _.tabContent.classList.add('hidden');
+    delete _.tabContent.dataset.init;
     _.anchors.forEach(function removeActive(el) {
       var parent = el.parentNode;
       if (el.dataset.tab === tab && !parent.classList.contains('active')) {
@@ -73,25 +76,17 @@ finna.feedTabs = (function finnaFeedTab() {
         if (el.classList.contains('feed-accordion-anchor')) {
           parent.insertAdjacentElement('afterend', _.tabContent);
         }
+        _.tabContent.dataset.feed = tab;
+        finna.feed.loadFeed(_.tabContent, function onLoad() {
+          _.isLoading = false;
+          if (!_.allowHashChange) {
+            _.allowHashChange = true;
+          }
+        });
+        _.tabContent.classList.remove('hidden');
       } else {
         parent.classList.remove('active');
         parent.setAttribute('aria-selected', false);
-      }
-    });
-    if (element.parentNode.nextElementSibling != null) {
-      if (element.parentNode.classList.contains('active')) {
-        element.parentNode.nextElementSibling.style.display = 'block';
-      } else {
-        element.parentNode.nextElementSibling.style.display = 'none';
-      }
-    }
-    _.tabContent.innerHTML = '';
-    delete _.tabContent.dataset.init;
-    _.tabContent.dataset.feed = tab;
-    finna.feed.loadFeed(_.tabContent, function onLoad() {
-      _.isLoading = false;
-      if (!_.allowHashChange) {
-        _.allowHashChange = true;
       }
     });
   };
